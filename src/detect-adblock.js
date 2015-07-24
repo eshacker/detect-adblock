@@ -1,5 +1,6 @@
 (function (win) {
-	var undefined = void(0), doc = win.document, bait, timer, count = 0, sent = false,
+	var undefined = void(0), doc = win.document, bait, timer, count = 0, reported = false,
+		blockerDetected = false,
 		obs = win.Obs || {}, exports = {
 			maxCount: 30,
 			interval: 100,
@@ -12,6 +13,14 @@
 			bait.setAttribute('class', exports.className);
 			bait.setAttribute('style', exports.style);
 			bait = doc.body.appendChild(bait);
+
+			bait.offsetParent;
+			bait.offsetHeight;
+			bait.offsetLeft;
+			bait.offsetTop;
+			bait.offsetWidth;
+			bait.clientHeight;
+			bait.clientWidth;
 		},
 		onload = function () {
 			timer = setInterval(function () {
@@ -23,6 +32,7 @@
 				// an ad blocker has been detected, we report it
 				if (checkBait() === true) {
 					win.clearTimeout(timer);
+					blockerDetected = true;
 					report(true);
 				}
 				count++;
@@ -31,6 +41,16 @@
 		checkBait = function () {
 			if (bait === undefined) {
 				createBait();
+			}
+			if (win.document.body.getAttribute('abp') !== null
+				|| bait.offsetParent === null
+				|| bait.offsetHeight == 0
+				|| bait.offsetLeft == 0
+				|| bait.offsetTop == 0
+				|| bait.offsetWidth == 0
+				|| bait.clientHeight == 0
+				|| bait.clientWidth == 0) {
+				return true;
 			}
 			if (win.getComputedStyle !== undefined) {
 				var baitStyles = win.getComputedStyle(bait, null);
@@ -43,38 +63,58 @@
 			return false;
 		},
 		report = function (status) {
-			sent = true;
+			reported = true;
+
+			// trigger event
+			triggerEvent(win.document, {status: status});
+
+			// executes the callbacks
 			callbacks.forEach(function (cb) {
 				cb(status);
 			});
 			removeBait();
 		},
 		removeBait = function () {
-			doc.body.removeChild(bait);
+			try {
+				doc.body.removeChild(bait);
+			} catch (e) {
+			}
+		},
+		triggerEvent = function (el, data) {
+			var options = {
+				bubbles: true,
+				cancelable: true,
+				detail: data
+			}, event, name = 'detectAdblock';
+			if (doc.createEvent) {
+				// Standard Event
+				event = win.document.createEvent('CustomEvent');
+				event.initCustomEvent(name, options.bubbles, options.cancelable, options.detail);
+				el.dispatchEvent(event);
+			} else {
+				// IE Event
+				event = win.document.createEventObject();
+				for (var key in options) {
+					event[key] = options[key];
+				}
+				el.fireEvent('on' + name, event);
+			}
 		};
 
 	// prevent multiple reports
-	if (sent === true) {
+	if (reported === true) {
 		return;
 	}
 
-	if (win.addEventListener !== undefined) {
-		win.addEventListener('load', onload, false);
-	} else {
-		win.attachEvent('onload', onload);
-	}
 	exports.on = function (callback) {
-		callbacks.push(callback);
-	};
-
-	// default callback, report to xiti
-	exports.on(function (status) {
-		if (status === true) {
-			// 1 : actif
-			// 2 : inactif
-			var x19 = 'x19=1';
-			win.xt_multc = win.xt_multc ? win.xt_multc + '&' + x19 : x19;
+		// executes the callback immediately if a blocker has been detected
+		if (reported) {
+			callback(blockerDetected);
+		} else {
+			// adds the callback to a list
+			callbacks.push(callback);
 		}
-	});
+	};
+	onload();
 	obs.detectAdblock = exports;
 })(window);
