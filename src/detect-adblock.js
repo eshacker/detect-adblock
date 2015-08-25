@@ -26,12 +26,11 @@
 			timer = setInterval(function () {
 				// maximum execution time reached, abort
 				if (count === exports.maxCount) {
-					win.clearTimeout(timer);
+					win.clearInterval(timer);
 					report(false);
-				}
-				// an ad blocker has been detected, we report it
-				if (checkBait() === true) {
-					win.clearTimeout(timer);
+				}// an ad blocker has been detected, we report it
+				else if (checkBait() === true) {
+					win.clearInterval(timer);
 					blockerDetected = true;
 					report(true);
 				}
