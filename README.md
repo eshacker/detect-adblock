@@ -27,11 +27,11 @@ Détection de adblock
   xtn2 = "1";
   xtpage = "Nom::De::Page_Ici";
   xtdi = "";
-  xt_multc = "&x1=&x2=&x3=&x4=&x5=&x8=&x15=";
+  xt_multc = "&x1=&x2=&x4=&x5=&x6=&x7=&x8=&x9=&x10=&x11=&x12=&x13=&x14=&x15=";
   
   document.addEventListener("detectAdblock", function (event) {
   
-  	// après la détection, on rempli l'indicateur x19
+  	// après la détection, on remplit l'indicateur x19
   	var detected = event.detail.status || false,
   		multcVar = xt_multc + '&x19' + '=' + (detected === true ? '1' : '2'),
   		deviceDetect = function () {
@@ -50,7 +50,7 @@ Détection de adblock
   	try {
   		multcVar = multcVar + "&x3=" + (deviceDetect() || '1');
   	} catch (e) {
-  		console.debug('deviceDetect failed !');
+  		console.debug('deviceDetect failed!');
   	}
   
   	window.xtparam = window.xtparam ? window.xtparam + multcVar : multcVar;
