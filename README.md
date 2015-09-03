@@ -34,7 +34,7 @@ Détection de adblock
   	// après la détection, on rempli l'indicateur x19
   	var detected = event.detail.status || false,
   		multcVar = xt_multc + '&x19' + '=' + (detected === true ? '1' : '2'),
-  		device_detect = function () {
+  		deviceDetect = function () {
   			var userAgent = navigator.userAgent.toLowerCase(),
   				isMobile = (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(userAgent)),
   				isTablet = (/ipad|android 3.0|xoom|sch-i800|playbook|tablet|kindle|silk/i.test(userAgent)),
@@ -48,9 +48,9 @@ Détection de adblock
   			return deviceDedected;
   		};
   	try {
-  		multcVar = multcVar + "&x3=" + (device_detect() || '1');
+  		multcVar = multcVar + "&x3=" + (deviceDetect() || '1');
   	} catch (e) {
-  		console.debug('device_detect failed !');
+  		console.debug('deviceDetect failed !');
   	}
   
   	window.xtparam = window.xtparam ? window.xtparam + multcVar : multcVar;
