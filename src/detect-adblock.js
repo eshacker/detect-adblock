@@ -84,7 +84,7 @@
 				bubbles: true,
 				cancelable: true,
 				detail: data
-			}, event, name = 'ObsDetectAdblock';
+			}, event, name = 'detectAdblock';
 			if (doc.createEvent) {
 				// Standard Event
 				event = win.document.createEvent('CustomEvent');

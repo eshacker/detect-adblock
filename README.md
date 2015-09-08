@@ -6,7 +6,7 @@ Détection de adblock
 ```html
 <script src="src/detect-adblock.js"></script>
 <script>
-  document.addEventListener("ObsDetectAdblock", function(event){
+  document.addEventListener("detectAdblock", function(event){
     if (event.detail.status === true)
       console.log("AdBlocker detected");
     else
@@ -31,7 +31,7 @@ Détection de adblock
   
   (function (win) {
     var doc = win.document;
-    doc.addEventListener('ObsDetectAdblock', function (event) {
+    doc.addEventListener('detectAdblock', function (event) {
       // après la détection, on remplit l'indicateur x19
       var detected = event.detail.status || false,
         multcVar = win.xt_multc + '&x19' + '=' + (detected === true ? '1' : '2'),
