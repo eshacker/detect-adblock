@@ -30,6 +30,7 @@ Détection de adblock
   xt_multc = "&x1=&x2=&x4=&x5=&x6=&x7=&x8=&x9=&x10=&x11=&x12=&x13=&x14=&x15=";
   
   (function (win) {
+    if(win.xtparam!=null){win.xtparam+=xt_multc}else{win.xtparam=xt_multc;}
     var doc = win.document,
         fillXtMultc = function (xNumber, value) {
           var multcVar = '&x' + xNumber + '=' + value;
