@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>I detect AdBlock</title>
+  <script type="text/javascript" src="./src/detect-adblock.js"></script>
+</head>
+<body>
+  <script>
+    document.addEventListener("detectAdblock", function(event){
+      var msg = "AdBlocker";
+      msg += event.detail.status === true ? ' ' : ' not ';
+      msg += "detected";
+      document.write(msg);
+    });
+  </script>
+</body>
+</html>
